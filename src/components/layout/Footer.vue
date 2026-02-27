@@ -25,7 +25,7 @@
             <router-link to="/" class="footer__link">Главная</router-link>
             <router-link to="/public-registry" class="footer__link">Реестр пропусков</router-link>
             <button @click="scrollToDepts" class="footer__link footer__link--button">Отделы</button>
-            <a href="https://forum.majestic-rp.ru/threads/ustav-los-santos-county-sheriffs-department.2677666/" target="_blank" rel="noopener noreferrer" class="footer__link">Устав</a>
+            <a href="https://forum.majestic-rp.ru/threads/ustav-los-santos-county-sheriffs-department.2981524/" target="_blank" rel="noopener noreferrer" class="footer__link">Устав</a>
           </div>
           
           <div class="footer__links-column">
@@ -421,4 +421,5 @@ const scrollToDepts = () => {
     transform: translateX(-50%);
   }
 }
+
 </style>
