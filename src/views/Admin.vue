@@ -271,8 +271,10 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { loadData, saveData, initDatabase, subscribeToChanges } from '../services/supabase'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
+
 
 const router = useRouter()
 const activeTab = ref('registry')
@@ -304,35 +306,40 @@ const officers = ref([])
 const accessKeys = ref([])
 
 // Загрузка данных
-onMounted(() => {
+onMounted(async () => {
   checkAuth()
-  loadData()
+  
+  // Пробуем подключиться к Supabase
+  const connected = await initDatabase()
+  
+  if (connected) {
+    // Загружаем данные из Supabase
+    const data = await loadData()
+    officers.value = data.officers || []
+    accessKeys.value = data.keys || []
+    updateStats()
+    
+    // Подписываемся на изменения (для синхронизации между пользователями)
+    const subscription = subscribeToChanges((newData) => {
+      officers.value = newData.officers || []
+      accessKeys.value = newData.keys || []
+      updateStats()
+    })
+    
+    // Отписываемся при размонтировании
+    onUnmounted(() => {
+      subscription.unsubscribe()
+    })
+  } else {
+    // Fallback на localStorage если Supabase не работает
+    console.log('Using localStorage as fallback')
+    const savedOfficers = localStorage.getItem('lssd_officers')
+    const savedKeys = localStorage.getItem('lssd_keys')
+    officers.value = savedOfficers ? JSON.parse(savedOfficers) : []
+    accessKeys.value = savedKeys ? JSON.parse(savedKeys) : []
+    updateStats()
+  }
 })
-
-const checkAuth = () => {
-  const auth = localStorage.getItem('lssd_auth')
-  if (!auth) {
-    router.push('/login')
-    return
-  }
-  
-  const user = JSON.parse(auth)
-  isLeader.value = user.isLeader || false
-  
-  if (!isLeader.value) {
-    activeTab.value = 'registry'
-  }
-}
-
-const loadData = () => {
-  const savedOfficers = localStorage.getItem('lssd_officers')
-  const savedKeys = localStorage.getItem('lssd_keys')
-  
-  officers.value = savedOfficers ? JSON.parse(savedOfficers) : []
-  accessKeys.value = savedKeys ? JSON.parse(savedKeys) : []
-  
-  updateStats()
-}
 
 const updateStats = () => {
   stats.value = {
@@ -488,9 +495,22 @@ const handleLogout = () => {
   router.push('/login')
 }
 
-const saveToStorage = () => {
+const saveToStorage = async () => {
+  const data = {
+    officers: officers.value,
+    keys: accessKeys.value
+  }
+  
+  // Сохраняем в Supabase
+  const saved = await saveData(data)
+  
+  // Дублируем в localStorage как запасной вариант
   localStorage.setItem('lssd_officers', JSON.stringify(officers.value))
   localStorage.setItem('lssd_keys', JSON.stringify(accessKeys.value))
+  
+  if (!saved) {
+    console.warn('Data saved only to localStorage')
+  }
 }
 
 const resetOfficerForm = () => {
