@@ -200,7 +200,7 @@ const cards = [
   {
     title: 'Устав',
     desc: 'Нормативно-правовая база, внутренние регламенты и кодекс поведения офицера.',
-    to: 'https://forum.majestic-rp.ru/threads/ustav-los-santos-county-sheriffs-department.2677666/',
+    to: 'https://forum.majestic-rp.ru/threads/ustav-los-santos-county-sheriffs-department.2981524/',
     action: 'external',
     accent: '#8fff87',
     svg: `<path d="M12 3L4 7v6c0 4 4 7 8 8 4-1 8-4 8-8V7l-8-4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>`,
