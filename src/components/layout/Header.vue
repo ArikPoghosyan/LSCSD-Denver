@@ -52,7 +52,7 @@
   
   <!-- Устав - внешняя ссылка -->
   <a 
-    href="https://forum.majestic-rp.ru/threads/ustav-los-santos-county-sheriffs-department.2677666/"
+    href="https://forum.majestic-rp.ru/threads/ustav-los-santos-county-sheriffs-department.2981524/"
     target="_blank"
     rel="noopener noreferrer"
     class="nav__link"
